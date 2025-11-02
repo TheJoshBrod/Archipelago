@@ -1,0 +1,222 @@
+#########################
+# Proj Specific gitignore
+#########################
+
+runner
+
+#########################
+# gitignore Template
+#########################
+
+# Temporary / test output
+tmp
+output
+files_for_autograder_io/
+*/var/*
+secrets/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.pyc
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+env/
+venv/
+venv3/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+.pdm-python
+.pdm-build/
+.pixi
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py.cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Translations
+*.mo
+*.pot
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask
+instance/
+.webassets-cache
+
+# Scrapy
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+.pybuilder/
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# Environment / dependency managers
+pyenv
+.python-version
+pipenv
+Pipfile.lock
+UV
+uv.lock
+poetry
+poetry.lock
+poetry.toml
+pdm
+pdm.lock
+pdm.toml
+pixi
+pixi.lock
+
+# PEP 582
+__pypackages__/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath
+*.sage.py
+
+# Spyder
+.spyderproject
+.spyproject
+
+# Rope
+.ropeproject/
+
+# mkdocs
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre
+.pyre/
+
+# pytype
+.pytype/
+
+# Cython
+cython_debug/
+
+# PyCharm
+#.idea/
+
+# Abstra
+.abstra/
+
+# VS Code
+.vscode/
+
+# Ruff
+.ruff_cache/
+
+# PyPI config
+.pypirc
+
+# Cursor editor
+.cursorignore
+.cursorindexingignore
+
+# Marimo
+marimo/_static/
+marimo/_lsp/
+__marimo__/
+
+########################
+# Other languages/tools
+########################
+
+# JavaScript
+bundle.js
+*node_modules*
+
+# Compiled Jac Lang files
+*.jir
+
+# Virtual Machines
+.vagrant/
+
+########################
+# Editors / IDEs
+########################
+*~
+*.lock
+*.swp
+.idea/
+
+########################
+# OS-specific
+########################
+
+# macOS
+*.DS_Store
+Icon
+
+# Windows Zone Identifiers
+*Zone.Identifier
+
+# Google Drive / Dropbox
+.dropbox*
