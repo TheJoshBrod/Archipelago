@@ -3,6 +3,8 @@
 #include <iostream>
 #include <random>
 #include <set>
+#include <vector>
+#include <algorithm>
 
 class habitant{
     public:
@@ -13,16 +15,36 @@ class habitant{
 
 class Island {
 public:
-    int id;
-    int num_proc;
+
+    // ARGS
     std::function<double(habitant)> heuristic_function_ptr;
+    int heuristic_id;
+
+    // KWARGS
+    int island_size;
+
     std::vector<habitant> habitants;
     std::vector<habitant> immigrants;
 
-    Island(std::function<double(habitant)> heuristic_function, int identity = -1, int p = -1)
+    Island(std::function<double(habitant)> heuristic_function, int heuristic_num, int size = 10)
         : heuristic_function_ptr(heuristic_function),
-          id(identity == -1 ? generate_random_id() : identity),
-          num_proc(p == -1 ? 1 : p) {}
+          heuristic_id(heuristic_num),
+          island_size(size){}
+        
+
+    void initial_generation() {
+        habitants.clear();
+        habitants.reserve(island_size);
+
+        static std::random_device rd;
+        static std::mt19937 gen(rd());
+        std::uniform_int_distribution<> dist(-100, 100);
+
+        for (int i = 0; i < island_size; i++) {
+            habitants.push_back({ dist(gen), dist(gen) });
+        }
+    }
+
     
     void generate_next_generation(){
 
@@ -53,10 +75,10 @@ public:
         for (int i = 0; i < num_parents; ++i)
             parents.push_back(fitness[i].second);
         
-        // Randomly select another 25% of bottom 75%
+        // Next 50% of island population consists of randomly sampling bottom 75% of island
         std::set<int> added;
         std::uniform_int_distribution<> bottom_three_quarters(num_parents, fitness.size() - 1);
-        while(parents.size() < num_parents * 2){
+        while(parents.size() < num_parents * 3){
             int index = bottom_three_quarters(gen);
             if (added.find(index) == added.end()){  
                 added.insert(index);           
@@ -68,6 +90,7 @@ public:
         // Integrate Immigrants
         // ********************
 
+        // Integrate missing 25% from immigrants
         parents.insert(parents.end(), immigrants.begin(), immigrants.end());
         
         // ******************
@@ -77,13 +100,20 @@ public:
         // Randomly select parent from parent pool
         std::uniform_int_distribution<> parent_dist(0, parents.size() - 1);
 
-        // Generate offspring
+        // Establish new generation
         std::vector<habitant> new_generation;
+
+        // Keep top N original generation unchanged
+        int elites = habitants.size() * 0.1;
+        for (int i = 0; i < elites; ++i)
+            new_generation.push_back(fitness[i].second);
+
+        // Generate new offspring 
         while ((int)new_generation.size() < (int)habitants.size()) {
             habitant parent1 = parents[parent_dist(gen)];
             habitant parent2 = parents[parent_dist(gen)];
 
-            // Simple arithmetic crossover
+            // Simple arithmetic crossover (TODO: Make more complex)
             double alpha = crossover_ratio(gen);
             habitant child;
             child.x = static_cast<int>(alpha * parent1.x + (1 - alpha) * parent2.x);
@@ -98,22 +128,42 @@ public:
             new_generation.push_back(child);
         }
 
+        // Set new generation of inhabitants
+        habitants = std::move(new_generation);
+    }
+
+    std::vector<const habitant*> select_immigrants(size_t M) {
+        struct Scored {
+            double score;
+            size_t index;
+        };
+
+        std::vector<Scored> scores;
+        scores.reserve(habitants.size());
+
+        // Creates 
+        for (size_t i = 0; i < habitants.size(); ++i)
+            scores.push_back({ heuristic(habitants[i]), i });
+
+        // Sort descending by fitness
+        std::sort(scores.begin(), scores.end(),
+                [](const auto& a, const auto& b){ return a.score > b.score; });
+
+        // Pick top M as immigrants
+        std::vector<const habitant*> immigrants;
+        immigrants.reserve(M);
+        for (size_t i = 0; i < M && i < scores.size(); ++i)
+            immigrants.push_back(&habitants[scores[i].index]);
+
+        return immigrants;
+    }
+
+    void receive_immigrants(std::vector<habitant> immigrant_list){
+        immigrants = immigrant_list;
     }
 
 private:
-    static int generate_random_id() {
-        static std::random_device rd;
-        static std::mt19937 gen(rd());
-        std::uniform_int_distribution<> dist(1, 100);
-        return dist(gen);
-    }
-
     double heuristic(habitant a) const {
         return heuristic_function_ptr(a);
     }
 };
-
-
-int main(int argc, char** argv){
-    printf("Works!");
-}
